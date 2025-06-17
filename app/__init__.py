@@ -8,14 +8,12 @@ import html
 from app.helpers.session import init_session
 from app.helpers.db import connect_db
 from app.helpers.errors import init_error, not_found_error
-from app.helpers.logging import init_logging
 
 # Create the app
 app = Flask(__name__)
 
 # Configure app
 init_session(app)   # Setup a session for messages, etc.
-init_logging(app)   # Log requests
 init_error(app)     # Handle errors and exceptions
 
 
@@ -26,9 +24,8 @@ init_error(app)     # Handle errors and exceptions
 def index():
     with connect_db() as client:
         # Get all the things from the DB
-        sql = "SELECT id, name, priority, complete FROM task ORDER BY name DESC"
-        params = []
-        result = client.execute(sql, params)
+        sql = "SELECT id, name, priority, complete FROM tasks ORDER BY priority DESC"
+        result = client.execute(sql)
         tasks = result.rows
    
     return render_template("pages/home.jinja", tasks=tasks )
